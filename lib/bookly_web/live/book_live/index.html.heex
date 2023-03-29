@@ -1,0 +1,51 @@
+<.header>
+  Listing Books
+  <:actions>
+    <.link patch={~p"/books/new"}>
+      <.button>New Book</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="books"
+  rows={@streams.books}
+  row_click={fn {_id, book} -> JS.navigate(~p"/books/#{book}") end}
+>
+  <:col :let={{_id, book}} label="Author"><%= book.author %></:col>
+  <:col :let={{_id, book}} label="Authorlf"><%= book.authorlf %></:col>
+  <:col :let={{_id, book}} label="Average rating"><%= book.average_rating %></:col>
+  <:col :let={{_id, book}} label="Remote"><%= book.remote_id %></:col>
+  <:col :let={{_id, book}} label="Bookshelves"><%= book.bookshelves %></:col>
+  <:col :let={{_id, book}} label="Exclusive shelf"><%= book.exclusive_shelf %></:col>
+  <:col :let={{_id, book}} label="Date added"><%= book.date_added %></:col>
+  <:col :let={{_id, book}} label="Date read"><%= book.date_read %></:col>
+  <:col :let={{_id, book}} label="Pages count"><%= book.pages_count %></:col>
+  <:col :let={{_id, book}} label="Publisher"><%= book.publisher %></:col>
+  <:col :let={{_id, book}} label="Title"><%= book.title %></:col>
+  <:action :let={{_id, book}}>
+    <div class="sr-only">
+      <.link navigate={~p"/books/#{book}"}>Show</.link>
+    </div>
+    <.link patch={~p"/books/#{book}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, book}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: book.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="book-modal" show on_cancel={JS.patch(~p"/books")}>
+  <.live_component
+    module={BooklyWeb.BookLive.FormComponent}
+    id={@book.id || :new}
+    title={@page_title}
+    action={@live_action}
+    book={@book}
+    patch={~p"/books"}
+  />
+</.modal>

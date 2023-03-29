@@ -1,0 +1,36 @@
+<.header>
+  Book <%= @book.id %>
+  <:subtitle>This is a book record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/books/#{@book}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit book</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Author"><%= @book.author %></:item>
+  <:item title="Authorlf"><%= @book.authorlf %></:item>
+  <:item title="Average rating"><%= @book.average_rating %></:item>
+  <:item title="Remote"><%= @book.remote_id %></:item>
+  <:item title="Bookshelves"><%= @book.bookshelves %></:item>
+  <:item title="Exclusive shelf"><%= @book.exclusive_shelf %></:item>
+  <:item title="Date added"><%= @book.date_added %></:item>
+  <:item title="Date read"><%= @book.date_read %></:item>
+  <:item title="Pages count"><%= @book.pages_count %></:item>
+  <:item title="Publisher"><%= @book.publisher %></:item>
+  <:item title="Title"><%= @book.title %></:item>
+</.list>
+
+<.back navigate={~p"/books"}>Back to books</.back>
+
+<.modal :if={@live_action == :edit} id="book-modal" show on_cancel={JS.patch(~p"/books/#{@book}")}>
+  <.live_component
+    module={BooklyWeb.BookLive.FormComponent}
+    id={@book.id}
+    title={@page_title}
+    action={@live_action}
+    book={@book}
+    patch={~p"/books/#{@book}"}
+  />
+</.modal>
